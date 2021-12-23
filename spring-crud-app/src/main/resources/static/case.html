@@ -1,0 +1,80 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>AwesomeCORP</title>
+    <meta name="description" content="Welcome to AwesomeCORP">
+    <meta name="author" content="AwesomeCORP">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script type="text/javascript">
+            async function unwrapAlert(response){
+                if(!response.ok){
+                    swal({
+                      title: response.status,
+                      text: response.statusText,
+                      icon: "error",
+                    });
+                }
+                return response.text();
+            }
+
+            const url = new URL(window.location)
+            const caseId = url.searchParams.get('caseId')
+
+            var init = fetch(`/api/case/${caseId}`)
+    </script>
+</head>
+
+<body>
+<nav>
+    <h6><a href="/logout">Logout</a></h6>
+    <h6><a href="/dashboard">Back</a></h6>
+</nav>
+<main id="case-app">
+    <h1>{{model.id}}</h1>
+    <p>Approved: {{model.approved}}</p>
+    <p>Done: {{model.done}}</p>
+    <p>Subject Person: {{model.subjectPerson.firstName + " " + model.subjectPerson.lastName}}</p>
+
+    <h3>Thread</h3>
+    <div v-html="caseThread"></div>
+</main>
+<script>
+        (async function init2(){
+            const caseR = await init
+            const caseD = JSON.parse(await unwrapAlert(caseR))
+
+            var caseApp = new Vue({
+              el: '#case-app',
+              data: {
+                model: caseD
+              },
+              computed: {
+                caseThread: function(){
+                    return quote(this.model, 0)
+                }
+              }
+            })
+        })()
+
+       var quote = function(casee, i){
+            if(!casee){
+                return ""
+            }
+            return `
+ <blockquote>
+ <span>
+    ${"&ensp;&ensp;".repeat(i)}<b>${casee.initiatingPerson.firstName + " " + casee.initiatingPerson.lastName}</b> -- ${casee.justification}
+    ${quote(casee.thread, i+1)}
+ </span>
+ </blockquote>
+`}
+</script>
+</body>
+</html>

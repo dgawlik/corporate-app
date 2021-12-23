@@ -1,0 +1,6 @@
+org/dgawlik/controller/UserController.class
+org/dgawlik/security/User.class
+org/dgawlik/security/KeyProvider.class
+org/dgawlik/repository/InMemoryStore$1.class
+org/dgawlik/repository/InMemoryStore.class
+org/dgawlik/App.class

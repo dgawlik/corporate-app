@@ -1,0 +1,50 @@
+version: "3.9"
+services:
+  app:
+    image: "org.dgawlik/corp-crud-app"
+    ports:
+      - "8080:8080"
+    environment:
+      - CRUD_SERVER_PORT=8080
+      - IDP_SERVER_PORT=8081
+      - MONGO_SERVER_PORT=27017
+      - MONGO_SERVER_HOST=mongo_1
+      - IDP_SERVER_HOST=localhost
+      - CRUD_SERVER_HOST=localhost
+  idp:
+    ports:
+      - "8081:8081"
+    image: "org.dgawlik/corp-idp-app"
+    environment:
+      - IDP_SERVER_PORT=8081
+  mongo_1:
+    image: mongo
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGODB_ADVERTISED_HOSTNAME=mongo_1
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+      - MONGODB_REPLICA_SET_NAME=rs1
+    volumes:
+      - ./mongo-repl.key:/etc/mongo-repl.key
+  mongo_2:
+    image: mongo
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGODB_ADVERTISED_HOSTNAME=mongo_2
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+      - MONGODB_REPLICA_SET_NAME=rs1
+  mongosetup:
+    image: mongo
+    depends_on:
+      - mongo_1
+      - mongo_2
+    volumes:
+      - ./init.sh:/init.sh
+      - ./repl_init.js:/repl_init.js
+    restart: "no"
+    entrypoint: [ "/init.sh" ]
+

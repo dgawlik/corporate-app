@@ -1,0 +1,13 @@
+{
+  "people": [
+    {"id": "a", "firstName": "Gregory", "lastName": "Peck", "age": 40, "role": "CEO", "appraisals": 1, "salary": 120000, "childrenIds": ["b", "c"]},
+
+    {"id": "b", "firstName": "Adam", "lastName": "Sandler", "age": 50, "role": "IT_MANAGER", "appraisals": 0, "salary": 95000, "parentId": "a", "childrenIds": ["d", "e"]},
+    {"id": "c", "firstName": "Meg", "lastName": "Ryan", "age": 60, "role": "HR_MANAGER", "appraisals": 2, "salary": 100000, "parentId": "a", "childrenIds": ["f", "g"]},
+
+    {"id": "d", "firstName": "James", "lastName": "Bond", "age": 35, "role": "IT", "appraisals": 0, "salary": 55000, "parentId": "b"},
+    {"id": "e", "firstName": "Monica", "lastName": "Belluci", "age": 21, "role": "IT", "appraisals": 0, "salary": 42000, "parentId": "b"},
+    {"id": "f", "firstName": "Frank", "lastName": "Moody", "age": 27, "role": "HR", "appraisals": 0, "salary": 510000, "parentId": "c"},
+    {"id": "g", "firstName": "Frank", "lastName": "Sinatra", "age": 32, "role": "HR", "appraisals": 1, "salary": 60000, "parentId": "c"}
+  ]
+}

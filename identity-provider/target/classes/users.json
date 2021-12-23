@@ -1,0 +1,46 @@
+{
+  "users": [
+    {
+      "email": "a@corp.com",
+      "firstName": "Gregory",
+      "lastName": "Peck",
+      "password": "$2a$12$Usxne.F/muScM0Wa0wSFfeN1ixfEf0HZXfjyaXLj5K8oWppkAFVIS"
+    },
+    {
+      "email": "b@corp.com",
+      "firstName": "Adam",
+      "lastName": "Sandler",
+      "password": "$2a$12$0hHPGAWgvkH1KkOeD/YFpedEmZqZeM4sMeqOYJiOe7xOmtrYyzp/O"
+    },
+    {
+      "email": "c@corp.com",
+      "firstName": "Meg",
+      "lastName": "Ryan",
+      "password": "$2a$12$drGPr.PRFViCtlj55kVfq.C9N8r8k6GKX4fYiJNzWL/uKn8ESBsby"
+    },
+    {
+      "email": "d@corp.com",
+      "firstName": "James",
+      "lastName": "Bond",
+      "password": "$2a$12$a/SJ/xyu4/aqUopf4A8VtO39dcUvtZIjGpAR20cR5R9NwCub.5HES"
+    },
+    {
+      "email": "e@corp.com",
+      "firstName": "Monica",
+      "lastName": "Belluci",
+      "password": "$2a$12$PItbLpm1TJaFohOyWltuyuV9l1qTTtGo6VUDGkHCVMS1sAa/1v6eS"
+    },
+    {
+      "email": "f@corp.com",
+      "firstName": "Frank",
+      "lastName": "Moody",
+      "password": "$2a$12$yamYuxrL7sRQGRajG8vhruwUIwydI0Fod7SgTqbea9AL3NFGSfVpy"
+    },
+    {
+      "email": "g@corp.com",
+      "firstName": "Frank",
+      "lastName": "Sinatra",
+      "password": "$2a$12$fWrycp2bgmTQSoq1Z/I7n.0iSxKk8OTC2tokM9dE2uakkDgFuqTUi"
+    }
+  ]
+}
