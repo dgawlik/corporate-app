@@ -1,9 +1,13 @@
 package org.dgawlik.util;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Utility {
 
@@ -15,5 +19,17 @@ public class Utility {
             cases = new ArrayList<>(cases);
         cases.add(id);
         return cases;
+    }
+
+    public static HttpEntity<Map<String, String>> idpRequest(String firstName,
+            String lastName, String secret) {
+
+        var token = BCrypt.withDefaults()
+                          .hashToString(12, secret.toCharArray());
+        var headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+
+        return new HttpEntity<>(Map.of("firstName", firstName,
+                "lastName", lastName), headers);
     }
 }

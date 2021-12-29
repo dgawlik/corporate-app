@@ -4,15 +4,26 @@ import org.dgawlik.domain.PersonRepository;
 import org.dgawlik.domain.document.Case;
 import org.dgawlik.domain.document.Person;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class Fire extends ActionExecution {
+import static org.dgawlik.util.Utility.idpRequest;
 
-    public Fire(PersonRepository personRepository) {
+public class Fire
+        extends ActionExecution {
+
+    private final RestTemplate rest;
+    private final String secret;
+
+    public Fire(PersonRepository personRepository,
+            RestTemplate rest, String secret) {
         super(personRepository);
+        this.rest = rest;
+        this.secret = secret;
     }
 
     @Override
@@ -21,6 +32,17 @@ public class Fire extends ActionExecution {
 
         promoteChildRebind(subject.get());
         personRepository.delete(subject.get());
+
+        var request = idpRequest(subject.get()
+                                        .getFirstName(),
+                subject.get()
+                       .getLastName(), secret);
+        var response = rest.postForEntity("/api/user/delete", request, String.class);
+
+
+        if (response.getStatusCode() != HttpStatus.OK) {
+            throw new IllegalStateException("Unable to deregister user at IDP");
+        }
     }
 
     private Person promoteChildRebind(Person person) {
@@ -53,8 +75,8 @@ public class Fire extends ActionExecution {
     @NotNull
     private List<String> extractIds(List<Person> subordinates) {
         return subordinates.stream()
-                .map(Person::getId)
-                .collect(Collectors.toList());
+                           .map(Person::getId)
+                           .collect(Collectors.toList());
     }
 
     private void inheritGear(Person subject, Person top) {

@@ -1,5 +1,9 @@
+/home/dominik/IdeaProjects/corporate-app/identity-provider/src/main/java/org/dgawlik/security/ApiSecretFilter.java
 /home/dominik/IdeaProjects/corporate-app/identity-provider/src/main/java/org/dgawlik/App.java
 /home/dominik/IdeaProjects/corporate-app/identity-provider/src/main/java/org/dgawlik/repository/InMemoryStore.java
 /home/dominik/IdeaProjects/corporate-app/identity-provider/src/main/java/org/dgawlik/security/KeyProvider.java
+/home/dominik/IdeaProjects/corporate-app/identity-provider/src/main/java/org/dgawlik/Client.java
 /home/dominik/IdeaProjects/corporate-app/identity-provider/src/main/java/org/dgawlik/controller/UserController.java
 /home/dominik/IdeaProjects/corporate-app/identity-provider/src/main/java/org/dgawlik/security/User.java
+/home/dominik/IdeaProjects/corporate-app/identity-provider/src/main/java/org/dgawlik/security/ApiManager.java
+/home/dominik/IdeaProjects/corporate-app/identity-provider/src/main/java/org/dgawlik/security/LoginManager.java

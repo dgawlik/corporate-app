@@ -1,6 +1,13 @@
-org/dgawlik/controller/UserController.class
+org/dgawlik/security/User$UserBuilder.class
+org/dgawlik/security/ApiManager.class
 org/dgawlik/security/User.class
 org/dgawlik/security/KeyProvider.class
+org/dgawlik/App$Chain1Config.class
+org/dgawlik/controller/UserController.class
+org/dgawlik/security/ApiSecretFilter.class
+org/dgawlik/App$Chain2Config.class
+org/dgawlik/security/LoginManager.class
+org/dgawlik/Client.class
 org/dgawlik/repository/InMemoryStore$1.class
 org/dgawlik/repository/InMemoryStore.class
 org/dgawlik/App.class
