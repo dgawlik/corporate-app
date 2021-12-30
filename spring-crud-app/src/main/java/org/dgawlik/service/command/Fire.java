@@ -21,6 +21,7 @@ public class Fire
 
     public Fire(PersonRepository personRepository,
             RestTemplate rest, String secret) {
+
         super(personRepository);
         this.rest = rest;
         this.secret = secret;
@@ -28,16 +29,24 @@ public class Fire
 
     @Override
     public void execute(Case casee) {
+
         Optional<Person> subject = getSubjectFromCase(casee);
+
+        assert subject.isPresent();
 
         promoteChildRebind(subject.get());
         personRepository.delete(subject.get());
 
-        var request = idpRequest(subject.get()
-                                        .getFirstName(),
-                subject.get()
-                       .getLastName(), secret);
-        var response = rest.postForEntity("/api/user/delete", request, String.class);
+        var request = idpRequest(
+                subject
+                        .get()
+                        .getFirstName(),
+                subject
+                        .get()
+                        .getLastName(),
+                secret);
+        var response = rest
+                .postForEntity("/api/user/delete", request, String.class);
 
 
         if (response.getStatusCode() != HttpStatus.OK) {
@@ -74,12 +83,15 @@ public class Fire
 
     @NotNull
     private List<String> extractIds(List<Person> subordinates) {
-        return subordinates.stream()
-                           .map(Person::getId)
-                           .collect(Collectors.toList());
+
+        return subordinates
+                .stream()
+                .map(Person::getId)
+                .collect(Collectors.toList());
     }
 
     private void inheritGear(Person subject, Person top) {
+
         top.setParentId(subject.getParentId());
         top.setRole(subject.getRole());
         top.setSalary(subject.getSalary());

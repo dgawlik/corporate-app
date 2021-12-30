@@ -19,6 +19,7 @@ public class ActionExecutionConfig {
             @Value("${idp.server.host.back:localhost}") String idpHost,
             @Value("${idp.server.port:8081}") Integer idpPort,
             @Value("${idp.api.secret:secret}") String idpApiSecret) {
+
         this.personRepository = personRepository;
         this.idpHost = idpHost;
         this.idpPort = idpPort;
@@ -27,26 +28,31 @@ public class ActionExecutionConfig {
 
     @Bean
     public ActionExecution fireCommand() {
+
         return new Fire(personRepository, idpRest(), idpApiSecret);
     }
 
     @Bean
     public ActionExecution giveRaiseCommand() {
+
         return new GiveRaise(personRepository);
     }
 
     @Bean
     public ActionExecution hireCommand() {
+
         return new Hire(personRepository, idpRest(), idpApiSecret);
     }
 
     @Bean
     public ActionExecution praiseCommand() {
+
         return new Praise(personRepository);
     }
 
     @Bean
     public RestTemplate idpRest() {
+
         return new RestTemplateBuilder()
                 .rootUri("http://" + idpHost + ":" + idpPort)
                 .build();

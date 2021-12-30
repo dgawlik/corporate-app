@@ -11,12 +11,16 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CaseInitiation {
+
     @NotNull
     String onBehalfId;
+
     @NotNull
     LimitedPersonView subject;
+
     @NotNull
     Action action;
+
     @NotNull
     String justification;
 }

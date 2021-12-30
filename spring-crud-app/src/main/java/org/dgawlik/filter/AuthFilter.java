@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.dgawlik.service.KeyProvider;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * The simplest way possible to enforce authentication
@@ -24,7 +26,8 @@ import java.util.Optional;
  * otherwise it redirects to identity component.
  */
 @Component
-public class AuthFilter implements Filter {
+public class AuthFilter
+        implements Filter {
 
     private final KeyProvider keyProvider;
     private final String myHost;
@@ -33,10 +36,11 @@ public class AuthFilter implements Filter {
     private final Integer idpPort;
 
     public AuthFilter(KeyProvider keyProvider,
-                      @Value("${crud.server.host:localhost}") String myHost,
-                      @Value("${idp.server.host:localhost}") String idpHost,
-                      @Value("${crud.server.port:8080}") Integer myPort,
-                      @Value("${idp.server.port:8081}") Integer idpPort) {
+            @Value("${crud.server.host:localhost}") String myHost,
+            @Value("${idp.server.host:localhost}") String idpHost,
+            @Value("${crud.server.port:8080}") Integer myPort,
+            @Value("${idp.server.port:8081}") Integer idpPort) {
+
         this.keyProvider = keyProvider;
         this.myHost = myHost;
         this.idpHost = idpHost;
@@ -44,7 +48,9 @@ public class AuthFilter implements Filter {
         this.idpPort = idpPort;
     }
 
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws
+                                                                                                                  IOException,
+                                                                                                                  ServletException {
 
         String path = http(servletRequest).getRequestURI();
 
@@ -53,16 +59,9 @@ public class AuthFilter implements Filter {
             return;
         }
 
+        Optional<Cookie> optionalCookie = getCookie(servletRequest);
 
-        var cookies = http(servletRequest).getCookies() == null ?
-                new Cookie[0] : http(servletRequest).getCookies();
-        Optional<Cookie> c = Arrays.stream(cookies)
-                .filter(x -> x.getName()
-                        .equals("CORP-ID"))
-                .findAny();
-
-
-        if (c.isEmpty()) {
+        if (optionalCookie.isEmpty()) {
             if (path.startsWith("/api")) {
                 respondWithError(servletResponse, "No credentials found.");
             } else {
@@ -71,9 +70,10 @@ public class AuthFilter implements Filter {
             return;
         }
 
-        var cookie = c.get();
+        var cookie = optionalCookie.get();
 
-        JWTVerifier verifier = JWT.require(Algorithm.RSA256(keyProvider))
+        JWTVerifier verifier = JWT
+                .require(Algorithm.RSA256(keyProvider))
                 .withIssuer("CORP LOGIN")
                 .build();
 
@@ -87,16 +87,33 @@ public class AuthFilter implements Filter {
         }
     }
 
-    private void respondWithError(ServletResponse servletResponse, String msg) throws IOException {
+    @NotNull private Optional<Cookie> getCookie(ServletRequest servletRequest) {
+
+        return
+                (http(servletRequest).getCookies() == null ?
+                         Stream.<Cookie>empty() :
+                         Arrays.stream(http(servletRequest).getCookies()))
+                        .filter(x -> x
+                                .getName()
+                                .equals("CORP-ID"))
+                        .findAny();
+    }
+
+    private void respondWithError(ServletResponse servletResponse, String msg) throws
+                                                                               IOException {
+
         http(servletResponse).setHeader("Content-Type",
                 "text/plain");
-        http(servletResponse).getWriter()
+        http(servletResponse)
+                .getWriter()
                 .print(msg);
         http(servletResponse)
                 .sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
-    private void redirectToIdp(ServletResponse servletResponse) throws IOException {
+    private void redirectToIdp(ServletResponse servletResponse) throws
+                                                                IOException {
+
         var redirectUrl = UriComponentsBuilder
                 .fromUriString(
                         "http://{idpHost}:{idpPort}/authenticate?callback={callback}")
@@ -107,16 +124,20 @@ public class AuthFilter implements Filter {
     }
 
     private boolean isPublicPage(String path) {
-        return List.of("/index.html", "/dashboard.html", "/case.html", "/",
+
+        return List
+                .of("/index.html", "/dashboard.html", "/case.html", "/",
                         "/logout")
                 .contains(path);
     }
 
     private HttpServletRequest http(ServletRequest request) {
+
         return (HttpServletRequest) request;
     }
 
     private HttpServletResponse http(ServletResponse response) {
+
         return (HttpServletResponse) response;
     }
 }

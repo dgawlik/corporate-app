@@ -6,19 +6,26 @@ import org.dgawlik.domain.document.Person;
 
 import java.util.Optional;
 
-public class GiveRaise extends ActionExecution {
+public class GiveRaise
+        extends ActionExecution {
 
     public GiveRaise(PersonRepository personRepository) {
+
         super(personRepository);
     }
 
     @Override
     public void execute(Case casee) {
+
         Optional<Person> subject = getSubjectFromCase(casee);
 
-        subject.get()
-                .setSalary(subject.get()
-                        .getSalary() * 1.1);
+        assert subject.isPresent();
+
+        subject
+                .get()
+                .setSalary(subject
+                                   .get()
+                                   .getSalary() * 1.1);
         personRepository.save(subject.get());
     }
 }

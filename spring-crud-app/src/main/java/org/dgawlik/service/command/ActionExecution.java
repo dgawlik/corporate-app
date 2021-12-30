@@ -24,7 +24,9 @@ public abstract class ActionExecution {
 
     @NotNull
     protected Optional<Person> getSubjectFromCase(Case aCase) {
-        var subject = personRepository.findById(aCase.getSubjectPerson()
+
+        var subject = personRepository.findById(aCase
+                .getSubjectPerson()
                 .getId());
 
         if (subject.isEmpty()) {

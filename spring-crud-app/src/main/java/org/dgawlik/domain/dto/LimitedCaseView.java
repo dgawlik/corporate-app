@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class LimitedCaseView {
+
     String id;
     Boolean approved;
     Boolean done;

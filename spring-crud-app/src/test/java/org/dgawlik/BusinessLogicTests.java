@@ -200,7 +200,7 @@ public class BusinessLogicTests {
             when(restTemplate.postForEntity(anyString(), any(), eq(String.class)))
                     .thenReturn(ResponseEntity.ok()
                                               .build());
-            
+
             fire("d");
             fire("e");
             fire("b");

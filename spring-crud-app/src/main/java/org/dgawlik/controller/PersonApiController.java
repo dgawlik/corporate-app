@@ -17,13 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.dgawlik.util.Utility.extractString;
+
 /**
  * REST api for EngineService and Repositories.
  */
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-public class PersonApiController extends ApiBase {
+public class PersonApiController
+        extends ApiBase {
 
     private final PersonRepository personRepository;
 
@@ -34,12 +37,11 @@ public class PersonApiController extends ApiBase {
 
     @GetMapping(path = "/fill")
     public Fill getPerson(@RequestAttribute DecodedJWT decodedJwt) {
+
         var me = personRepository
                 .findByFirstNameAndLastName(
-                        decodedJwt.getClaim("firstName")
-                                .asString(),
-                        decodedJwt.getClaim("lastName")
-                                .asString())
+                        extractString(decodedJwt, "firstName"),
+                        extractString(decodedJwt, "lastName"))
                 .orElseThrow(() ->
                         new NonExistingResourceException("Person does not exist"));
 
@@ -48,7 +50,8 @@ public class PersonApiController extends ApiBase {
 
         final var caseIds =
                 me.getCaseIds() != null ?
-                        me.getCaseIds() : List.of();
+                        me.getCaseIds() :
+                        List.of();
 
         var cases = caseRepository
                 .findAllProjectedBy(LimitedCaseView.class)
@@ -58,7 +61,8 @@ public class PersonApiController extends ApiBase {
 
         var actions = approvalRulesService.canInitiate(me.getRole());
 
-        return new Fill(me, colleagues.stream()
+        return new Fill(me, colleagues
+                .stream()
                 .toList(), cases, actions);
     }
 }

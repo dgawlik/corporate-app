@@ -1,6 +1,7 @@
 package org.dgawlik.service;
 
 import info.schnatterer.mobynamesgenerator.MobyNamesGenerator;
+import lombok.RequiredArgsConstructor;
 import org.dgawlik.domain.CaseRepository;
 import org.dgawlik.domain.PersonRepository;
 import org.dgawlik.domain.document.Action;
@@ -22,6 +23,7 @@ import static org.dgawlik.util.Utility.getWithDefaultWithAppended;
  * initiate ---> [approve]* ----> [reject]
  */
 @Service
+@RequiredArgsConstructor
 public class EngineService {
 
     private final CaseRepository caseRepository;
@@ -29,26 +31,18 @@ public class EngineService {
     private final ApprovalRulesService approvalRulesService;
     private final ActionExecutorService actionExecutorService;
 
-    public EngineService(CaseRepository caseRepository,
-                         PersonRepository personRepository,
-                         ApprovalRulesService approvalRulesService,
-                         ActionExecutorService actionExecutorService) {
-        this.caseRepository = caseRepository;
-        this.personRepository = personRepository;
-        this.approvalRulesService = approvalRulesService;
-        this.actionExecutorService = actionExecutorService;
-    }
-
 
     public Case initiate(Person onBehalf, Person subject, Action action,
-                         String justification) {
+            String justification) {
 
-        if (!approvalRulesService.canInitiate(onBehalf.getRole())
+        if (!approvalRulesService
+                .canInitiate(onBehalf.getRole())
                 .contains(action)) {
             throw new IllegalApiUseException("Initiator can't start " + action);
         }
 
-        var root = Case.builder()
+        var root = Case
+                .builder()
                 .id(MobyNamesGenerator.getRandomName())
                 .approved(true)
                 .subjectPerson(subject)
@@ -89,15 +83,17 @@ public class EngineService {
         // note that when initiator is
         // in position to perform, the action is already fulfilled
         // in initiate() step
-        if (casee.getInitiatingPerson()
+        if (casee
+                .getInitiatingPerson()
                 .getId()
                 .equals(onBehalf.getId())) {
             throw new IllegalApiUseException("Can't approve your own case");
         }
 
         if (onBehalf.getCaseIds() == null ||
-                !onBehalf.getCaseIds()
-                        .contains(casee.getId())) {
+            !onBehalf
+                    .getCaseIds()
+                    .contains(casee.getId())) {
             throw new IllegalApiUseException("Person not authorized to approve case");
         }
 
@@ -130,8 +126,9 @@ public class EngineService {
         }
 
         if (onBehalf.getCaseIds() == null ||
-                !onBehalf.getCaseIds()
-                        .contains(casee.getId())) {
+            !onBehalf
+                    .getCaseIds()
+                    .contains(casee.getId())) {
             throw new IllegalApiUseException("Person not authorized to reject case");
         }
 
@@ -148,7 +145,9 @@ public class EngineService {
     }
 
     private Case.CaseBuilder nest(Case casee) {
-        return Case.builder()
+
+        return Case
+                .builder()
                 .action(casee.getAction())
                 .subjectPerson(casee.getSubjectPerson())
                 .id(casee.getId())
@@ -157,25 +156,31 @@ public class EngineService {
 
 
     private void perform(Case casee) {
+
         actionExecutorService.perform(casee);
     }
 
     private boolean notInPositionToPerform(Action action, Person onBehalf) {
-        return !approvalRulesService.approves(action)
+
+        return !approvalRulesService
+                .approves(action)
                 .contains(onBehalf.getRole());
     }
 
     /**
      * Superior sees case in his dashboard.
-     *
-     * @param onBehalf
-     * @param rootId
      */
     private void updateBossMailbox(Person onBehalf, String rootId) {
+
         var boss = personRepository.findById(onBehalf.getParentId());
-        var newCases = getWithDefaultWithAppended(boss.get()
+
+        assert boss.isPresent();
+
+        var newCases = getWithDefaultWithAppended(boss
+                .get()
                 .getCaseIds(), rootId);
-        boss.get()
+        boss
+                .get()
                 .setCaseIds(newCases);
         personRepository.save(boss.get());
     }

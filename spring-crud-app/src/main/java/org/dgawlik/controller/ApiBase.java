@@ -13,6 +13,7 @@ public abstract class ApiBase {
             = {IllegalApiUseException.class})
     public String handleIllegalApiUse(
             RuntimeException ex, HttpServletResponse response) {
+
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         return ex.getMessage();
     }
@@ -21,6 +22,7 @@ public abstract class ApiBase {
             = {NonExistingResourceException.class})
     public String handleNonExisting(
             RuntimeException ex, HttpServletResponse response) {
+
         response.setStatus(HttpStatus.NOT_FOUND.value());
         return ex.getMessage();
     }

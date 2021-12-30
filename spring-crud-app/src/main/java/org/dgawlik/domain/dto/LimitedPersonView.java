@@ -13,6 +13,7 @@ import org.dgawlik.domain.document.Role;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LimitedPersonView {
+
     String id;
     String firstName;
     String lastName;

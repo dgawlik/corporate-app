@@ -11,6 +11,7 @@ import java.util.List;
  */
 @Value
 public class Fill {
+
     Person me;
     List<LimitedPersonView> colleagues;
     List<LimitedCaseView> myCases;

@@ -13,7 +13,8 @@ import java.util.List;
 
 @EnableMongoRepositories
 @SpringBootApplication
-public class App extends AbstractMongoClientConfiguration {
+public class App
+        extends AbstractMongoClientConfiguration {
 
     @Value("${mongo.server.host:localhost}")
     private String host;
@@ -22,17 +23,21 @@ public class App extends AbstractMongoClientConfiguration {
     private Integer port;
 
     public static void main(String[] args) {
+
         SpringApplication.run(App.class, args);
     }
 
     @Override
     protected String getDatabaseName() {
+
         return "test";
     }
 
     @Override
     protected void configureClientSettings(MongoClientSettings.Builder builder) {
-        builder.credential(MongoCredential.createCredential("admin",
+
+        builder
+                .credential(MongoCredential.createCredential("admin",
                         "admin", "pass".toCharArray()))
                 .applyToClusterSettings(settings -> {
                     settings.hosts(List.of(new ServerAddress(host, port)));

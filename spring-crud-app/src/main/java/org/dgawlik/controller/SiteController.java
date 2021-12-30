@@ -51,7 +51,7 @@ public class SiteController {
     @GetMapping(path = "/logout", produces = MediaType.TEXT_HTML_VALUE)
     public ResponseEntity<String> logoutRedirect(HttpServletResponse resp) {
         ResponseCookie deleteCookie = ResponseCookie
-                .from("CORP-ID", null)
+                .from("CORP-ID", "DELETE")
                 .path("/")
                 .maxAge(0)
                 .build();
@@ -60,7 +60,8 @@ public class SiteController {
 
         var url = UriComponentsBuilder
                 .fromUriString("http://{idpHost}:{idpPort}/logout?callback={cbk}")
-                .buildAndExpand(idpHost, idpPort, "http://" + myHost + ":" + myPort)
+                .buildAndExpand(idpHost, idpPort,
+                        "http://" + myHost + ":" + myPort)
                 .toUriString();
 
         return ResponseEntity

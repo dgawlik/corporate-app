@@ -10,12 +10,16 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CaseUpdate {
+
     @NotNull
     String caseId;
+
     @NotNull
     String onBehalfId;
+
     @NotNull
     Boolean approve;
+
     @NotNull
     String justification;
 }
