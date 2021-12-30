@@ -19,8 +19,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
@@ -28,6 +31,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
 
 
 @ExtendWith(SetupTeardownMongo.class)
@@ -47,13 +52,17 @@ public class BusinessLogicTests {
     @Autowired
     private CaseRepository caseRepository;
 
+    @MockBean
+    private RestTemplate restTemplate;
+
     @Value("classpath:/fixture.json")
     private Resource fixture;
 
     private ObjectMapper om = new ObjectMapper();
 
     @BeforeEach
-    public void initEach() throws Exception {
+    public void initEach() throws
+                           Exception {
         var fix = om.readValue(fixture.getFile(),
                 new TypeReference<Map<String, List<Person>>>() {
                 });
@@ -78,9 +87,9 @@ public class BusinessLogicTests {
         james = person("d").get();
 
         assertThat(james.getCaseIds()
-                .size()).isEqualTo(1);
+                        .size()).isEqualTo(1);
         assertThat(adam.getCaseIds()
-                .size()).isEqualTo(1);
+                       .size()).isEqualTo(1);
     }
 
     @Test
@@ -140,9 +149,13 @@ public class BusinessLogicTests {
             var greg = person("a").get();
 
             var casee = Case.builder()
-                    .action(Action.FIRE)
-                    .subjectPerson(greg)
-                    .build();
+                            .action(Action.FIRE)
+                            .subjectPerson(greg)
+                            .build();
+
+            when(restTemplate.postForEntity(anyString(), any(), eq(String.class)))
+                    .thenReturn(ResponseEntity.ok()
+                                              .build());
 
             actionExecutorService.perform(casee);
 
@@ -160,16 +173,20 @@ public class BusinessLogicTests {
         @DisplayName("HIRE execution works")
         public void test2() {
             var newPerson = Person.builder()
-                    .firstName("John")
-                    .lastName("Doe")
-                    .role(Role.IT)
-                    .age(20)
-                    .build();
+                                  .firstName("John")
+                                  .lastName("Doe")
+                                  .role(Role.IT)
+                                  .age(20)
+                                  .build();
 
             var casee = Case.builder()
-                    .subjectPerson(newPerson)
-                    .action(Action.HIRE)
-                    .build();
+                            .subjectPerson(newPerson)
+                            .action(Action.HIRE)
+                            .build();
+
+            when(restTemplate.postForEntity(anyString(), any(), eq(String.class)))
+                    .thenReturn(ResponseEntity.ok()
+                                              .build());
 
             actionExecutorService.perform(casee);
 
@@ -180,23 +197,26 @@ public class BusinessLogicTests {
         @Test
         @DisplayName("HIRE execution works | empty department")
         public void test3() {
+            when(restTemplate.postForEntity(anyString(), any(), eq(String.class)))
+                    .thenReturn(ResponseEntity.ok()
+                                              .build());
+            
             fire("d");
             fire("e");
             fire("b");
 
             var newPerson = Person.builder()
-                    .firstName("John")
-                    .lastName("Doe")
-                    .id("h")
-                    .role(Role.IT)
-                    .age(20)
-                    .build();
+                                  .firstName("John")
+                                  .lastName("Doe")
+                                  .id("h")
+                                  .role(Role.IT)
+                                  .age(20)
+                                  .build();
 
             var casee = Case.builder()
-                    .subjectPerson(newPerson)
-                    .action(Action.HIRE)
-                    .build();
-
+                            .subjectPerson(newPerson)
+                            .action(Action.HIRE)
+                            .build();
 
             actionExecutorService.perform(casee);
 
@@ -214,9 +234,9 @@ public class BusinessLogicTests {
             assertThat(greg.getAppraisals()).isEqualTo(1);
 
             var casee = Case.builder()
-                    .subjectPerson(greg)
-                    .action(Action.PRAISE)
-                    .build();
+                            .subjectPerson(greg)
+                            .action(Action.PRAISE)
+                            .build();
 
             actionExecutorService.perform(casee);
 
@@ -232,9 +252,9 @@ public class BusinessLogicTests {
             var prevSalary = greg.getSalary();
 
             var casee = Case.builder()
-                    .subjectPerson(greg)
-                    .action(Action.GIVE_RAISE)
-                    .build();
+                            .subjectPerson(greg)
+                            .action(Action.GIVE_RAISE)
+                            .build();
 
             actionExecutorService.perform(casee);
 
@@ -253,9 +273,9 @@ public class BusinessLogicTests {
         var p = person(personId).get();
 
         var casee = Case.builder()
-                .action(Action.FIRE)
-                .subjectPerson(p)
-                .build();
+                        .action(Action.FIRE)
+                        .subjectPerson(p)
+                        .build();
 
         actionExecutorService.perform(casee);
     }
