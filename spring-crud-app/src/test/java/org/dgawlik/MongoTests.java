@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SetupTeardownMongo.class)
 @DataMongoTest
 @ActiveProfiles("testing")
-public class MongoTests {
+class MongoTests {
 
     private Person greg;
     private Person monica;
@@ -109,14 +109,14 @@ public class MongoTests {
 
     @Test
     @DisplayName("Person DB deserialization is working")
-    public void test1(@Autowired PersonRepository repository) {
+    void test1(@Autowired PersonRepository repository) {
         assertThat(repository.findAll()
                 .size())
                 .isEqualTo(7);
 
         var greg = repository.findByFirstNameAndLastName("Gregory", "Peck");
 
-        assertThat(greg.isPresent()).isTrue();
+        assertThat(greg).isPresent();
 
         var shouldBe = Person.builder()
                 .id("a")
@@ -128,15 +128,15 @@ public class MongoTests {
                 .childrenIds(List.of("b", "c"))
                 .appraisals(1)
                 .build();
-        assertThat(greg.get()).isEqualTo(shouldBe);
+        assertThat(greg).contains(shouldBe);
     }
 
     @Test
     @DisplayName("Nested Cases DB serialization/deserialization is working")
-    public void test2() {
+    void test2() {
 
         var casee = caseRepository.findById("theId");
-        assertThat(casee.isPresent()).isTrue();
+        assertThat(casee).isPresent();
 
         assertThat(casee.get()
                 .getJustification()).isEqualTo("We have no resources");
@@ -176,9 +176,9 @@ public class MongoTests {
 
     @Test
     @DisplayName("Case projection is applied recursively")
-    public void test3() {
+    void test3() {
         var caseView = caseRepository.findById("theId", LimitedCaseView.class);
-        assertThat(caseView.isPresent()).isTrue();
+        assertThat(caseView).isPresent();
 
         assertThat(caseView.get()
                 .getJustification()).isEqualTo("We have no resources");

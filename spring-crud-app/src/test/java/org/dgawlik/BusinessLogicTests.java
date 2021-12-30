@@ -38,7 +38,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SetupTeardownMongo.class)
 @SpringBootTest
 @ActiveProfiles("testing")
-public class BusinessLogicTests {
+class BusinessLogicTests {
 
     @Autowired
     private EngineService engineService;
@@ -78,7 +78,7 @@ public class BusinessLogicTests {
 
     @Test
     @DisplayName("Initiating while not able to fulfill promotes case to superior")
-    public void test1() {
+    void test1() {
         var james = person("d").get();
         var subject = person("g").get();
         var casee = engineService.initiate(james, subject, Action.PRAISE, "He's mean");
@@ -94,7 +94,7 @@ public class BusinessLogicTests {
 
     @Test
     @DisplayName("Initiating while able to fulfill executes the action")
-    public void test2() {
+    void test2() {
         var greg = person("a").get();
 
         assertThat(greg.getAppraisals()).isEqualTo(1);
@@ -105,7 +105,7 @@ public class BusinessLogicTests {
 
     @Test
     @DisplayName("Approval chain with fulfillment")
-    public void test3() {
+    void test3() {
         var james = person("d").get();
         var frank = person("g").get();
 
@@ -121,7 +121,7 @@ public class BusinessLogicTests {
 
     @Test
     @DisplayName("Rejection in chain is final")
-    public void test4() {
+    void test4() {
         var james = person("d").get();
         var frank = person("g").get();
 
@@ -141,7 +141,7 @@ public class BusinessLogicTests {
 
     @Nested
     @DisplayName("With approval/rejection working")
-    public class ActionExecutionTests {
+    class ActionExecutionTests {
 
         @Test
         @DisplayName("FIRE execution works")
@@ -171,7 +171,7 @@ public class BusinessLogicTests {
 
         @Test
         @DisplayName("HIRE execution works")
-        public void test2() {
+        void test2() {
             var newPerson = Person.builder()
                                   .firstName("John")
                                   .lastName("Doe")
@@ -196,7 +196,7 @@ public class BusinessLogicTests {
 
         @Test
         @DisplayName("HIRE execution works | empty department")
-        public void test3() {
+        void test3() {
             when(restTemplate.postForEntity(anyString(), any(), eq(String.class)))
                     .thenReturn(ResponseEntity.ok()
                                               .build());
@@ -228,7 +228,7 @@ public class BusinessLogicTests {
 
         @Test
         @DisplayName("PRAISE execution works")
-        public void test4() {
+        void test4() {
 
             var greg = person("a").get();
             assertThat(greg.getAppraisals()).isEqualTo(1);
@@ -246,7 +246,7 @@ public class BusinessLogicTests {
 
         @Test
         @DisplayName("GIVE_RAISE execution works")
-        public void test5() {
+        void test5() {
 
             var greg = person("a").get();
             var prevSalary = greg.getSalary();

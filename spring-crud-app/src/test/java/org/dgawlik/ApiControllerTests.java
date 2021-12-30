@@ -43,7 +43,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @WebMvcTest
 @ActiveProfiles("testing")
-public class ApiControllerTests {
+class ApiControllerTests {
 
     @TestConfiguration
     public static class Config {
@@ -111,7 +111,7 @@ public class ApiControllerTests {
 
     @Test
     @DisplayName("/api/fill status OK")
-    public void test1() throws Exception {
+    void test1() throws Exception {
         var token = getToken("Gregory", "Peck", "CORP LOGIN");
         defaultMocks();
 
@@ -128,7 +128,7 @@ public class ApiControllerTests {
 
     @Test
     @DisplayName("/api/fill unauthorized")
-    public void test2() throws Exception {
+    void test2() throws Exception {
         mockMvc.perform(get("/api/fill"))
                 .andExpect(MockMvcResultMatchers.status()
                         .isUnauthorized())
@@ -140,7 +140,7 @@ public class ApiControllerTests {
 
     @Test
     @DisplayName("/api/fill unverifiable JWT")
-    public void test3() throws Exception {
+    void test3() throws Exception {
         var token = getToken("Gregory", "Peck", "OTHER LOGIN");
         mockMvc.perform(get("/api/fill")
                         .cookie(new Cookie("CORP-ID", token)))
@@ -154,7 +154,7 @@ public class ApiControllerTests {
 
     @Test
     @DisplayName("/api/fill non existing person")
-    public void test4() throws Exception {
+    void test4() throws Exception {
         var token = getToken("Gregory", "Peck", "CORP LOGIN");
         when(personRepository.findByFirstNameAndLastName(any(), any()))
                 .thenThrow(new NonExistingResourceException("Non existing person."));
@@ -173,7 +173,7 @@ public class ApiControllerTests {
 
     @Test
     @DisplayName("/api/person/cases status OK")
-    public void test5() throws Exception {
+    void test5() throws Exception {
         var token = getToken("Gregory", "Peck", "CORP LOGIN");
         when(personRepository.findByFirstNameAndLastName(any(), any()))
                 .thenReturn(Optional.of(Person.builder()
@@ -191,7 +191,7 @@ public class ApiControllerTests {
 
     @Test
     @DisplayName("/api/case/nonExisting status OK")
-    public void test6() throws Exception {
+    void test6() throws Exception {
         var token = getToken("Gregory", "Peck", "CORP LOGIN");
 
         when(caseRepository.findById(any()))
@@ -206,7 +206,7 @@ public class ApiControllerTests {
 
     @Test
     @DisplayName("POST /api/case validation")
-    public void test7() throws Exception {
+    void test7() throws Exception {
         var token = getToken("Gregory", "Peck", "CORP LOGIN");
 
         var caseInitiation = "{\n" +
@@ -226,7 +226,7 @@ public class ApiControllerTests {
 
     @Test
     @DisplayName("PUT /api/case validation")
-    public void test8() throws Exception {
+    void test8() throws Exception {
         var token = getToken("Gregory", "Peck", "CORP LOGIN");
 
         var caseUpdate = new CaseUpdate("a", null,

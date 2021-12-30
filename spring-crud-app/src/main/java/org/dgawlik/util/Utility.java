@@ -12,6 +12,10 @@ import java.util.Map;
 
 public class Utility {
 
+    private Utility() {
+
+    }
+
     @NotNull
     public static List<String> getWithDefaultWithAppended(List<String> cases, String id) {
 

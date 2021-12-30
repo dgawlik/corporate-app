@@ -33,6 +33,7 @@ import static org.dgawlik.util.Utility.extractString;
 public class CaseApiController
         extends ApiBase {
 
+    public static final String INITIATING_USER_DOES_NOT_EXIST = "Initiating user does not exist";
     private final PersonRepository personRepository;
 
     private final CaseRepository caseRepository;
@@ -62,7 +63,7 @@ public class CaseApiController
                 .stream()
                 .map(cases::get)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 
@@ -89,7 +90,7 @@ public class CaseApiController
                 .findById(
                         caseInitiation.getOnBehalfId())
                 .orElseThrow(() -> new NonExistingResourceException(
-                        "Initiating user does not exist"));
+                        INITIATING_USER_DOES_NOT_EXIST));
 
         Person subject;
         if (caseInitiation.getAction() != Action.HIRE) {
@@ -161,7 +162,7 @@ public class CaseApiController
                         new NonExistingResourceException(
                                 "Case does not exist"));
 
-        if (caseUpdate.getApprove()) {
+        if (Boolean.TRUE.equals(caseUpdate.getApprove())) {
             engineService.approve(onBehalf, casee, caseUpdate.getJustification());
         } else {
             engineService.reject(onBehalf, casee, caseUpdate.getJustification());

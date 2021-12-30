@@ -87,7 +87,7 @@ public class Fire
         return subordinates
                 .stream()
                 .map(Person::getId)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private void inheritGear(Person subject, Person top) {
