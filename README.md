@@ -77,7 +77,6 @@ Additionally Mongo has requirement that for db transactions to work cluster with
 ### Building and running
 
 Requirements to run the app are Maven 3, Java 17 docker and docker-compose.
-After download you have to setup paths in build.sh script. From that point if you have linux it should work.
 
 First build images from root directory:
 
